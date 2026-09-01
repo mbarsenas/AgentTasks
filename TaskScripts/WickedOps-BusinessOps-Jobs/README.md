@@ -22,6 +22,7 @@ Run PowerShell 7 as Administrator:
 The daily report, product activity, and backup jobs work immediately. Gmail and Search Console jobs require a Google OAuth desktop client and a refresh token with these scopes:
 
 - `https://www.googleapis.com/auth/gmail.readonly`
+- `https://www.googleapis.com/auth/gmail.send` (failure notifications to the configured owner only)
 - `https://www.googleapis.com/auth/webmasters.readonly`
 
 Recommended guided authorization (opens Google sign-in and stores the refresh token automatically):
@@ -39,5 +40,7 @@ For an existing refresh token, store the values manually with:
 ```
 
 Secrets are protected with Windows DPAPI LocalMachine and restricted by ACL to SYSTEM, Administrators, and read-only access for `WickedOpsSvc`.
+
+The runner sends failure alerts through Gmail to `Alert.EmailTo`, and the deliverability watch alerts when it detects bounce, complaint, or opt-out signals. It never sends outreach or follow-ups automatically. `Alert.WebhookUrl` remains an optional fallback.
 
 Generated runtime folders (`Logs`, `Reports`, `Backups`, `Secrets`, and `State`) belong under `C:\WickedAdmin\BusinessOps` and must never be committed.
