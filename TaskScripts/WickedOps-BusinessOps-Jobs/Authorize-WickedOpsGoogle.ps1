@@ -10,7 +10,7 @@ $clientSecret=Read-PlainSecret 'Google OAuth Desktop client secret'
 if([string]::IsNullOrWhiteSpace($clientId) -or [string]::IsNullOrWhiteSpace($clientSecret)){throw 'Client ID and secret are required.'}
 $tcp=[Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback,0);$tcp.Start();$port=([Net.IPEndPoint]$tcp.LocalEndpoint).Port;$tcp.Stop()
 $redirect="http://127.0.0.1:$port/";$state=[Convert]::ToHexString([Security.Cryptography.RandomNumberGenerator]::GetBytes(24))
-$scopes=@('https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/webmasters.readonly') -join ' '
+$scopes=@('https://www.googleapis.com/auth/gmail.readonly','https://www.googleapis.com/auth/gmail.send','https://www.googleapis.com/auth/webmasters.readonly') -join ' '
 $auth='https://accounts.google.com/o/oauth2/v2/auth?'+(@("client_id=$(Encode $clientId)","redirect_uri=$(Encode $redirect)",'response_type=code',"scope=$(Encode $scopes)",'access_type=offline','prompt=consent','include_granted_scopes=true',"state=$(Encode $state)")-join '&')
 $listener=[Net.HttpListener]::new();$listener.Prefixes.Add($redirect);$listener.Start()
 try{
