@@ -24,7 +24,15 @@ The daily report, product activity, and backup jobs work immediately. Gmail and 
 - `https://www.googleapis.com/auth/gmail.readonly`
 - `https://www.googleapis.com/auth/webmasters.readonly`
 
-Store those values with:
+Recommended guided authorization (opens Google sign-in and stores the refresh token automatically):
+
+```powershell
+& 'C:\WickedAdmin\BusinessOps\Jobs\Authorize-WickedOpsGoogle.ps1'
+```
+
+Before running it, enable the Gmail API and Search Console API in one Google Cloud project, configure the OAuth consent screen with your Google account as a test user, and create an OAuth client of type **Desktop app**. The script prompts locally for that client ID and secret.
+
+For an existing refresh token, store the values manually with:
 
 ```powershell
 & 'C:\WickedAdmin\BusinessOps\Jobs\Set-WickedOpsBusinessSecrets.ps1'
