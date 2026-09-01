@@ -43,7 +43,7 @@ function Get-GoogleAccessToken {
 function Invoke-GoogleApi {
     param([Parameter(Mandatory)][string]$Token,[Parameter(Mandatory)][string]$Uri,[ValidateSet('Get','Post')][string]$Method='Get',$Body)
     $args=@{Method=$Method;Uri=$Uri;Headers=@{Authorization="Bearer $Token"};TimeoutSec=60}
-    if($null-ne$Body){$args.ContentType='application/json';$args.Body=($Body|ConvertTo-Json -Depth 8 -Compress)}
+    if($null -ne $Body){$args.ContentType='application/json';$args.Body=($Body|ConvertTo-Json -Depth 8 -Compress)}
     Invoke-RestMethod @args
 }
 
