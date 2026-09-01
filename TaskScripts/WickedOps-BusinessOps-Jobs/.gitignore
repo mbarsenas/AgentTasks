@@ -1,0 +1,7 @@
+Logs/
+Reports/
+Backups/
+Secrets/
+State/
+*.log
+*Secrets.json
