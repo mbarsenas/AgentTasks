@@ -5,3 +5,13 @@ $cfg=Get-Content $ConfigPath -Raw|ConvertFrom-Json;$s=Get-WickedOpsSecrets $Conf
 $out=@()
 foreach($site in $cfg.Sites){$property=if($site.PSObject.Properties['SearchConsoleProperty']){$site.SearchConsoleProperty}else{$site.Url};$uri='https://searchconsole.googleapis.com/webmasters/v3/sites/'+[uri]::EscapeDataString($property)+'/searchAnalytics/query';$body=@{startDate=$start.ToString('yyyy-MM-dd');endDate=$end.ToString('yyyy-MM-dd');dimensions=@('query');rowLimit=10};$r=Invoke-GoogleApi $t $uri Post $body;[object[]]$rows=@();if($r.PSObject.Properties['rows']){[object[]]$rows=@($r.rows)};$clicks=0;$impressions=0;foreach($row in @($rows)){$clicks += [int]$row.clicks;$impressions += [int]$row.impressions};$rowCount=@($rows).Count;Write-WickedOpsLog $LogPath "$($site.Name): clicks=$clicks; impressions=$impressions; topQueries=$rowCount.";$out+=@{Product=$site.Name;Clicks=$clicks;Impressions=$impressions;Rows=@($rows)}}
 $path=Join-Path (Get-WickedOpsRoot $ConfigPath) "Reports\SEO-$((Get-Date).ToString('yyyyMMdd')).json";New-Item (Split-Path $path) -ItemType Directory -Force|Out-Null;$out|ConvertTo-Json -Depth 8|Set-Content $path -Encoding utf8
+$lines=($out|ForEach-Object{"- $($_.Product): $($_.Clicks) clicks, $($_.Impressions) impressions, $(@($_.Rows).Count) top queries"}) -join "`n"
+$message=@"
+Search Console summary for $($start.ToString('yyyy-MM-dd')) through $($end.ToString('yyyy-MM-dd'))
+
+$lines
+
+Report: $path
+"@
+& (Join-Path $PSScriptRoot 'Send-WickedOpsGmailAlert.ps1') -ConfigPath $ConfigPath -Title "WickedOps weekly SEO report - $($end.ToString('yyyy-MM-dd'))" -Message $message -TaskName 'WeeklySeoIndexingReport'
+Write-WickedOpsLog $LogPath 'Weekly SEO report emailed to the configured owner.'
