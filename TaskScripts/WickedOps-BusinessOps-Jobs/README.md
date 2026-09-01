@@ -41,6 +41,6 @@ For an existing refresh token, store the values manually with:
 
 Secrets are protected with Windows DPAPI LocalMachine and restricted by ACL to SYSTEM, Administrators, and read-only access for `WickedOpsSvc`.
 
-The runner sends failure alerts through Gmail to `Alert.EmailTo`, and the deliverability watch alerts when it detects bounce, complaint, or opt-out signals. It never sends outreach or follow-ups automatically. `Alert.WebhookUrl` remains an optional fallback.
+The runner sends failure alerts through Gmail to `Alert.EmailTo`, and the deliverability watch alerts when it detects bounce, complaint, or opt-out signals. The daily operations report, non-empty prospect review queue, weekly SEO report, and weekly product activity report are also emailed to the configured owner. It never sends outreach or follow-ups automatically. `Alert.WebhookUrl` remains an optional fallback.
 
 Generated runtime folders (`Logs`, `Reports`, `Backups`, `Secrets`, and `State`) belong under `C:\WickedAdmin\BusinessOps` and must never be committed.
