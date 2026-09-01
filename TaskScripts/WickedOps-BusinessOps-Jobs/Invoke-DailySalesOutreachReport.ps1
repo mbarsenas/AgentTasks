@@ -1,7 +1,7 @@
 #requires -Version 7.2
 param([Parameter(Mandatory)][string]$ConfigPath,[Parameter(Mandatory)][string]$LogPath)
 Import-Module (Join-Path $PSScriptRoot 'WickedOps.Common.psm1') -Force
-$root=Get-WickedOpsRoot $ConfigPath; $since=(Get-Date).AddDays(-1); $logs=Get-ChildItem (Join-Path $root 'Logs') -Filter '*.log'|Where-Object LastWriteTime -ge $since
+$root=Get-WickedOpsRoot $ConfigPath; $since=(Get-Date).AddDays(-1); $logs=Get-ChildItem (Join-Path $root 'Logs') -Filter '*.log'|Where-Object { $_.LastWriteTime -ge $since -and $_.Name -notlike 'DailySalesOutreachReport-*' }
 $text=($logs|ForEach-Object{Get-Content $_.FullName -ErrorAction SilentlyContinue}) -join "`n"
 $paidSessions=0
 foreach($match in [regex]::Matches($text,'(?m)(\d+) completed paid checkout session\(s\)')){$paidSessions += [int]$match.Groups[1].Value}
